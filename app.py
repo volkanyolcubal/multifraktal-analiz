@@ -56,7 +56,7 @@ def demo_data(n=3136, k=10, seed=7):
         r = np.clip(0.0018 + vol * (0.5 * f + 0.866 * rng.normal(0, 1, n)), -0.15, 0.15)
         out[f"DEMO{j + 1}"] = 100 * np.cumprod(1 + r)
     df = pd.DataFrame(out)
-    df.insert(0, "Tarih", pd.bdate_range(end="2026-10-28", periods=n))
+    df.insert(0, "Tarih", pd.bdate_range(end="2026-11-12", periods=n))
     return df
 
 
@@ -292,7 +292,10 @@ with tabs[0]:
         if len(cols) >= 2:
             baskets[nm] = (cols, rf / 100)
     c1, c2 = st.columns([1, 2])
-    c1.dataframe(raw_df.head(10), width="stretch")
+    prev = raw_df.head(10).copy()
+    if dc != "(yok)":
+        prev[dc] = pd.to_datetime(prev[dc], dayfirst=True, errors="coerce").dt.strftime("%d.%m.%Y")
+    c1.dataframe(prev, width="stretch", hide_index=True)
     if len(all_cols):
         fig = go.Figure()
         cum = (1 + ret[all_cols[:8]].fillna(0)).cumprod()
