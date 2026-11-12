@@ -281,12 +281,13 @@ tabs = st.tabs(["📋 Veri & Sepetler", "💼 Portföyler", "🧬 λ² / Multifr
 # ── Sekme 1: veri ve sepet tanımı
 with tabs[0]:
     st.subheader("Sepet tanımı")
+    sig_ = abs(hash(tuple(all_cols))) % 10**6  # veri değişince sepet seçimleri sıfırlansın
     nb = st.number_input("Sepet sayısı", 1, 4, 2)
     baskets = {}
     for i in range(nb):
         c1, c2, c3 = st.columns([1, 4, 1])
         nm = c1.text_input("Ad", f"Sepet {i + 1}", key=f"bn{i}")
-        cols = c2.multiselect("Hisseler", all_cols, default=all_cols[5 * i:5 * i + 5], key=f"bc{i}")
+        cols = c2.multiselect("Hisseler", all_cols, default=all_cols[5 * i:5 * i + 5], key=f"bc{i}_{sig_}")
         rf = c3.number_input("Yıllık risksiz getiri %", 0.0, 500.0, 35.0, 0.01, key=f"rf{i}")
         if len(cols) >= 2:
             baskets[nm] = (cols, rf / 100)
